@@ -2043,6 +2043,8 @@ class TestSpectralPowerDistribution(unittest.TestCase):
                             '__mul__',
                             '__div__',
                             '__pow__',
+                            '__radd__',
+                            '__rmul__',
                             'get',
                             'is_uniform',
                             'extrapolate',
@@ -2278,6 +2280,40 @@ class TestSpectralPowerDistribution(unittest.TestCase):
             (spd1 ** spd2).values,
             spd.values ** spd.values)
 
+    def test__radd__(self):
+        """
+        Tests
+        :func:`colour.colorimetry.spectrum.SpectralPowerDistribution.__radd__`
+        method.
+        """
+
+        spd = self.__spd.clone()
+        values = spd.values
+        np.testing.assert_almost_equal(
+            (self.__phi + spd).values,
+            self.__phi + values)
+
+        spd = self.__spd.clone()
+        values = spd.values
+        random = np.random.random(len(values))
+        np.testing.assert_almost_equal((random + spd).values, random + values)
+
+    def test__rmul__(self):
+        """
+        Tests
+        :func:`colour.colorimetry.spectrum.SpectralPowerDistribution.__rmul__`
+        method.
+        """
+
+        spd = self.__spd.clone()
+        values = spd.values
+        np.testing.assert_almost_equal((2 * spd).values, 2 * values)
+
+        spd = self.__spd.clone()
+        values = spd.values
+        random = np.random.random(len(values))
+        np.testing.assert_almost_equal((random * spd).values, random * values)
+
     def test_get(self):
         """
         Tests
@@ -2459,6 +2495,8 @@ class TestTriSpectralPowerDistribution(unittest.TestCase):
                             '__mul__',
                             '__div__',
                             '__pow__',
+                            '__radd__',
+                            '__rmul__',
                             'get',
                             'is_uniform',
                             'extrapolate',
@@ -2715,6 +2753,44 @@ class TestTriSpectralPowerDistribution(unittest.TestCase):
         np.testing.assert_almost_equal(
             (tri_spd1 ** tri_spd2).values,
             tri_spd.values ** tri_spd.values)
+
+    def test__radd__(self):
+        """
+        Tests :func:`colour.colorimetry.spectrum.SpectralPowerDistribution.__radd__`  # noqa
+        method.
+        """
+
+        tri_spd = self.__tri_spd.clone()
+        values = tri_spd.values
+        np.testing.assert_almost_equal(
+            (self.__phi + tri_spd).values,
+            self.__phi + values)
+
+        tri_spd = self.__tri_spd.clone()
+        values = tri_spd.values
+        random = np.random.random(values.shape)
+        np.testing.assert_almost_equal(
+            (random + tri_spd).values,
+            random + values)
+
+    def test__rmul__(self):
+        """
+        Tests :func:`colour.colorimetry.spectrum.SpectralPowerDistribution.__rmul__`  # noqa
+        method.
+        """
+
+        tri_spd = self.__tri_spd.clone()
+        values = tri_spd.values
+        np.testing.assert_almost_equal(
+            (self.__phi * tri_spd).values,
+            self.__phi * values)
+
+        tri_spd = self.__tri_spd.clone()
+        values = tri_spd.values
+        random = np.random.random(values.shape)
+        np.testing.assert_almost_equal(
+            (random * tri_spd).values,
+            random * values)
 
     def test_get(self):
         """

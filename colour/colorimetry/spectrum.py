@@ -939,7 +939,7 @@ class SpectralPowerDistribution(object):
         Formats given :math:`x` variable operand to *numeric* or *ndarray*.
 
         This method is a convenient method to prepare the given :math:`x`
-        variable for the arithmetic operations below.
+        variable for arithmetic operations.
 
         Parameters
         ----------
@@ -1255,6 +1255,10 @@ class SpectralPowerDistribution(object):
                                self.values ** self.__format_operand(x)))
 
         return self
+
+    __radd__ = lambda self, x: self.__add__(x)
+
+    __rmul__ = lambda self, x: self.__mul__(x)
 
     def get(self, wavelength, default=None):
         """
@@ -2871,6 +2875,10 @@ class TriSpectralPowerDistribution(object):
             self.__data[axis].data = dict(zip(self.wavelengths, values[:, i]))
 
         return self
+
+    __radd__ = lambda self, x: self.__add__(x)
+
+    __rmul__ = lambda self, x: self.__mul__(x)
 
     def get(self, wavelength, default=None):
         """
