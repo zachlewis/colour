@@ -31,6 +31,7 @@ from .array import (
     dot_matrix,
     orient,
     centroid,
+    shift,
     linear_conversion)
 from .data_structures import (
     ArbitraryPrecisionMapping,
@@ -65,6 +66,7 @@ __all__ += ['as_numeric',
             'dot_matrix',
             'orient',
             'centroid',
+            'shift',
             'linear_conversion']
 __all__ += ['ArbitraryPrecisionMapping',
             'Lookup',
