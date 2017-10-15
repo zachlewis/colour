@@ -167,7 +167,7 @@ def kernel_cardinal_spline(x, a=0.5, b=0.0):
     """
     Returns the *cardinal spline* kernel evaluated at given samples. [1]_
 
-    Notable *cardinal splines* :math:`a` and :math:`b` parameterizations:
+    Notable *cardinal spline* :math:`a` and :math:`b` parameterizations:
 
     -   *Catmull-Rom*: :math:`(a=0.5, b=0)`
     -   *Cubic B-Spline*: :math:`(a=0, b=1)`
@@ -631,10 +631,6 @@ class LinearInterpolator(object):
     -----
     This class is a wrapper around *numpy.interp* definition.
 
-    See Also
-    --------
-    SpragueInterpolator
-
     Examples
     --------
     Interpolating a single numeric variable:
@@ -669,12 +665,17 @@ class LinearInterpolator(object):
     @property
     def x(self):
         """
-        Property for **self._x** private attribute.
+        Getter and setter property for the independent :math:`x` variable.
+
+        Parameters
+        ----------
+        value : array_like
+            Value to set the independent :math:`x` variable with.
 
         Returns
         -------
         array_like
-            self._x
+            Independent :math:`x` variable.
         """
 
         return self._x
@@ -682,12 +683,7 @@ class LinearInterpolator(object):
     @x.setter
     def x(self, value):
         """
-        Setter for **self._x** private attribute.
-
-        Parameters
-        ----------
-        value : array_like
-            Attribute value.
+        Setter for the **self.x** property.
         """
 
         if value is not None:
@@ -701,12 +697,19 @@ class LinearInterpolator(object):
     @property
     def y(self):
         """
-        Property for **self._y** private attribute.
+        Getter and setter property for the dependent and already known
+        :math:`y` variable.
+
+        Parameters
+        ----------
+        value : array_like
+            Value to set the dependent and already known :math:`y` variable
+            with.
 
         Returns
         -------
         array_like
-            self._y
+            Dependent and already known :math:`y` variable.
         """
 
         return self._y
@@ -714,12 +717,7 @@ class LinearInterpolator(object):
     @y.setter
     def y(self, value):
         """
-        Setter for **self._y** private attribute.
-
-        Parameters
-        ----------
-        value : array_like
-            Attribute value.
+        Setter for the **self.y** property.
         """
 
         if value is not None:
@@ -824,10 +822,6 @@ class SpragueInterpolator(object):
     -------
     __call__
 
-    See Also
-    --------
-    LinearInterpolator
-
     Notes
     -----
     The minimum number :math:`k` of data points required along the
@@ -898,12 +892,17 @@ class SpragueInterpolator(object):
     @property
     def x(self):
         """
-        Property for **self._x** private attribute.
+        Getter and setter property for the independent :math:`x` variable.
+
+        Parameters
+        ----------
+        value : array_like
+            Value to set the independent :math:`x` variable with.
 
         Returns
         -------
         array_like
-            self._x
+            Independent :math:`x` variable.
         """
 
         return self._x
@@ -911,12 +910,7 @@ class SpragueInterpolator(object):
     @x.setter
     def x(self, value):
         """
-        Setter for **self._x** private attribute.
-
-        Parameters
-        ----------
-        value : array_like
-            Attribute value.
+        Setter for the **self.x** property.
         """
 
         if value is not None:
@@ -939,12 +933,19 @@ class SpragueInterpolator(object):
     @property
     def y(self):
         """
-        Property for **self._y** private attribute.
+        Getter and setter property for the dependent and already known
+        :math:`y` variable.
+
+        Parameters
+        ----------
+        value : array_like
+            Value to set the dependent and already known :math:`y` variable
+            with.
 
         Returns
         -------
         array_like
-            self._y
+            Dependent and already known :math:`y` variable.
         """
 
         return self._y
@@ -952,12 +953,7 @@ class SpragueInterpolator(object):
     @y.setter
     def y(self, value):
         """
-        Setter for **self._y** private attribute.
-
-        Parameters
-        ----------
-        value : array_like
-            Attribute value.
+        Setter for the **self.y** property.
         """
 
         if value is not None:
@@ -1096,8 +1092,8 @@ class PchipInterpolator(scipy.interpolate.PchipInterpolator):
 
     Notes
     -----
-    This class is a wrapper around *scipy.interpolate.PchipInterpolator*
-    class.
+    -   This class is a wrapper around *scipy.interpolate.PchipInterpolator*
+        class.
     """
 
     def __init__(self, x, y, *args, **kwargs):
@@ -1108,12 +1104,19 @@ class PchipInterpolator(scipy.interpolate.PchipInterpolator):
     @property
     def y(self):
         """
-        Property for **self._y** private attribute.
+        Getter and setter property for the dependent and already known
+        :math:`y` variable.
+
+        Parameters
+        ----------
+        value : array_like
+            Value to set the dependent and already known :math:`y` variable
+            with.
 
         Returns
         -------
         array_like
-            self._y
+            Dependent and already known :math:`y` variable.
         """
 
         return self._y
@@ -1121,12 +1124,7 @@ class PchipInterpolator(scipy.interpolate.PchipInterpolator):
     @y.setter
     def y(self, value):
         """
-        Setter for **self._y** private attribute.
-
-        Parameters
-        ----------
-        value : array_like
-            Attribute value.
+        Setter for the **self.y** property.
         """
 
         raise AttributeError('"{0}" attribute is read only!'.format('y'))
@@ -1164,7 +1162,6 @@ class NullInterpolator(object):
     Methods
     -------
     __call__
-
 
     Examples
     --------
@@ -1208,12 +1205,17 @@ class NullInterpolator(object):
     @property
     def x(self):
         """
-        Property for **self._x** private attribute.
+        Getter and setter property for the independent :math:`x` variable.
+
+        Parameters
+        ----------
+        value : array_like
+            Value to set the independent :math:`x` variable with.
 
         Returns
         -------
         array_like
-            self._x
+            Independent :math:`x` variable.
         """
 
         return self._x
@@ -1221,12 +1223,7 @@ class NullInterpolator(object):
     @x.setter
     def x(self, value):
         """
-        Setter for **self._x** private attribute.
-
-        Parameters
-        ----------
-        value : array_like
-            Attribute value.
+        Setter for the **self.x** property.
         """
 
         if value is not None:
@@ -1240,12 +1237,19 @@ class NullInterpolator(object):
     @property
     def y(self):
         """
-        Property for **self._y** private attribute.
+        Getter and setter property for the dependent and already known
+        :math:`y` variable.
+
+        Parameters
+        ----------
+        value : array_like
+            Value to set the dependent and already known :math:`y` variable
+            with.
 
         Returns
         -------
         array_like
-            self._y
+            Dependent and already known :math:`y` variable.
         """
 
         return self._y
@@ -1253,12 +1257,7 @@ class NullInterpolator(object):
     @y.setter
     def y(self, value):
         """
-        Setter for **self._y** private attribute.
-
-        Parameters
-        ----------
-        value : array_like
-            Attribute value.
+        Setter for the **self.y** property.
         """
 
         if value is not None:
@@ -1272,12 +1271,17 @@ class NullInterpolator(object):
     @property
     def relative_tolerance(self):
         """
-        Property for **self._relative_tolerance** private attribute.
+        Getter and setter property for the relative tolerance.
+
+        Parameters
+        ----------
+        value : numeric
+            Value to set the relative tolerance with.
 
         Returns
         -------
         numeric
-            self._relative_tolerance
+            Relative tolerance.
         """
 
         return self._relative_tolerance
@@ -1285,12 +1289,7 @@ class NullInterpolator(object):
     @relative_tolerance.setter
     def relative_tolerance(self, value):
         """
-        Setter for **self._relative_tolerance** private attribute.
-
-        Parameters
-        ----------
-        value : numeric
-            Attribute value.
+        Setter for the **self.relative_tolerance** property.
         """
 
         if value is not None:
@@ -1302,12 +1301,17 @@ class NullInterpolator(object):
     @property
     def absolute_tolerance(self):
         """
-        Property for **self._absolute_tolerance** private attribute.
+        Getter and setter property for the absolute tolerance.
+
+        Parameters
+        ----------
+        value : numeric
+            Value to set the absolute tolerance with.
 
         Returns
         -------
         numeric
-            self._absolute_tolerance
+            Absolute tolerance.
         """
 
         return self._absolute_tolerance
@@ -1315,12 +1319,7 @@ class NullInterpolator(object):
     @absolute_tolerance.setter
     def absolute_tolerance(self, value):
         """
-        Setter for **self._absolute_tolerance** private attribute.
-
-        Parameters
-        ----------
-        value : numeric
-            Attribute value.
+        Setter for the **self.absolute_tolerance** property.
         """
 
         if value is not None:
@@ -1332,12 +1331,18 @@ class NullInterpolator(object):
     @property
     def default(self):
         """
-        Property for **self._default** private attribute.
+        Getter and setter property for the default value for call outside
+        tolerances.
+
+        Parameters
+        ----------
+        value : numeric
+            Value to set the default value with.
 
         Returns
         -------
         numeric
-            self._default
+            Default value.
         """
 
         return self._default
@@ -1345,12 +1350,7 @@ class NullInterpolator(object):
     @default.setter
     def default(self, value):
         """
-        Setter for **self._default** private attribute.
-
-        Parameters
-        ----------
-        value : numeric
-            Attribute value.
+        Setter for the **self.default** property.
         """
 
         if value is not None:
