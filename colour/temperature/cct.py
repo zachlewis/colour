@@ -204,7 +204,7 @@ ui=0.4456351..., vi=0.3548306..., di=0.2514749...)]
 
     ux, vx = uv
 
-    cmfs = cmfs.clone().trim_wavelengths(ASTME30815_PRACTISE_SHAPE)
+    cmfs = cmfs.copy().trim(ASTME30815_PRACTISE_SHAPE)
 
     shape = cmfs.shape
 
@@ -330,7 +330,7 @@ def uv_to_CCT_Ohno2013(
     Tin, uin, vin, din = Tuvdin.Ti, Tuvdin.ui, Tuvdin.vi, Tuvdin.di
 
     # Triangular solution.
-    l = np.hypot(uin - uip, vin - vip)
+    l = np.hypot(uin - uip, vin - vip)  # noqa
     x = (dip ** 2 - din ** 2 + l ** 2) / (2 * l)
     T = Tip + (Tin - Tip) * (x / l)
 
@@ -393,7 +393,7 @@ def CCT_to_uv_Ohno2013(
     array([ 0.1977999...,  0.3122004...])
     """
 
-    cmfs = cmfs.clone().trim_wavelengths(ASTME30815_PRACTISE_SHAPE)
+    cmfs = cmfs.copy().trim(ASTME30815_PRACTISE_SHAPE)
 
     shape = cmfs.shape
 

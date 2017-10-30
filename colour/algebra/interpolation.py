@@ -25,6 +25,7 @@ import scipy.interpolate
 from collections import OrderedDict
 from six.moves import reduce
 
+from colour.constants import DEFAULT_FLOAT_DTYPE
 from colour.utilities import (as_numeric, interval, is_integer, is_numeric,
                               closest_indexes, warning)
 
@@ -227,6 +228,8 @@ class KernelInterpolator(object):
     padding_args : dict, optional
          Arguments to use when padding :math:`y` variable values with the
          :func:`np.pad` definition.
+    dtype : type
+        Data type used for internal conversions.
 
     Attributes
     ----------
@@ -286,7 +289,8 @@ class KernelInterpolator(object):
                  window=3,
                  kernel=kernel_lanczos,
                  kernel_args=None,
-                 padding_args=None):
+                 padding_args=None,
+                 dtype=DEFAULT_FLOAT_DTYPE):
         self._x_p = None
         self._y_p = None
 
@@ -294,6 +298,7 @@ class KernelInterpolator(object):
         self._y = None
         self._window = None
         self._padding_args = {'pad_width': (window, window), 'mode': 'reflect'}
+        self._dtype = dtype
 
         self.x = x
         self.y = y
@@ -332,7 +337,7 @@ class KernelInterpolator(object):
         """
 
         if value is not None:
-            value = np.atleast_1d(value).astype(np.float_)
+            value = np.atleast_1d(value).astype(self._dtype)
 
             assert value.ndim == 1, (
                 '"x" independent variable must have exactly one dimension!')
@@ -380,7 +385,7 @@ class KernelInterpolator(object):
         """
 
         if value is not None:
-            value = np.atleast_1d(value).astype(np.float_)
+            value = np.atleast_1d(value).astype(self._dtype)
 
             assert value.ndim == 1, (
                 '"y" dependent variable must have exactly one dimension!')
@@ -539,7 +544,7 @@ class KernelInterpolator(object):
             Interpolated value(s).
         """
 
-        x = np.atleast_1d(x).astype(np.float_)
+        x = np.atleast_1d(x).astype(self._dtype)
 
         xi = as_numeric(self._evaluate(x))
 
@@ -617,6 +622,8 @@ class LinearInterpolator(object):
     y : array_like
         Dependent and already known :math:`y` variable values to
         interpolate.
+    dtype : type
+        Data type used for internal conversions.
 
     Attributes
     ----------
@@ -654,10 +661,13 @@ class LinearInterpolator(object):
     array([ 6.7825,  8.5075])
     """
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, dtype=DEFAULT_FLOAT_DTYPE):
+
         self._x = None
-        self.x = x
         self._y = None
+        self._dtype = dtype
+
+        self.x = x
         self.y = y
 
         self._validate_dimensions()
@@ -687,7 +697,7 @@ class LinearInterpolator(object):
         """
 
         if value is not None:
-            value = np.atleast_1d(value).astype(np.float_)
+            value = np.atleast_1d(value).astype(self._dtype)
 
             assert value.ndim == 1, (
                 '"x" independent variable must have exactly one dimension!')
@@ -721,7 +731,7 @@ class LinearInterpolator(object):
         """
 
         if value is not None:
-            value = np.atleast_1d(value).astype(np.float_)
+            value = np.atleast_1d(value).astype(self._dtype)
 
             assert value.ndim == 1, (
                 '"y" dependent variable must have exactly one dimension!')
@@ -744,7 +754,7 @@ class LinearInterpolator(object):
             Interpolated value(s).
         """
 
-        x = np.atleast_1d(x).astype(np.float_)
+        x = np.atleast_1d(x).astype(self._dtype)
 
         xi = as_numeric(self._evaluate(x))
 
@@ -812,6 +822,8 @@ class SpragueInterpolator(object):
     y : array_like
         Dependent and already known :math:`y` variable values to
         interpolate.
+    dtype : type
+        Data type used for internal conversions.
 
     Attributes
     ----------
@@ -878,13 +890,15 @@ class SpragueInterpolator(object):
             ISBN:978-3-901-90641-1
     """
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, dtype=DEFAULT_FLOAT_DTYPE):
         self._xp = None
         self._yp = None
 
         self._x = None
-        self.x = x
         self._y = None
+        self._dtype = dtype
+
+        self.x = x
         self.y = y
 
         self._validate_dimensions()
@@ -914,7 +928,7 @@ class SpragueInterpolator(object):
         """
 
         if value is not None:
-            value = np.atleast_1d(value).astype(np.float_)
+            value = np.atleast_1d(value).astype(self._dtype)
 
             assert value.ndim == 1, (
                 '"x" independent variable must have exactly one dimension!')
@@ -957,7 +971,7 @@ class SpragueInterpolator(object):
         """
 
         if value is not None:
-            value = np.atleast_1d(value).astype(np.float_)
+            value = np.atleast_1d(value).astype(self._dtype)
 
             assert value.ndim == 1, (
                 '"y" dependent variable must have exactly one dimension!')
@@ -1150,6 +1164,8 @@ class NullInterpolator(object):
         Relative tolerance.
     default : numeric, optional
         Default value for interpolation outside tolerances.
+    dtype : type
+        Data type used for internal conversions.
 
     Attributes
     ----------
@@ -1188,16 +1204,19 @@ class NullInterpolator(object):
                  y,
                  absolute_tolerance=10e-7,
                  relative_tolerance=10e-7,
-                 default=np.nan):
+                 default=np.nan,
+                 dtype=DEFAULT_FLOAT_DTYPE):
         self._x = None
-        self.x = x
         self._y = None
-        self.y = y
         self._absolute_tolerance = None
-        self.absolute_tolerance = absolute_tolerance
         self._relative_tolerance = None
-        self.relative_tolerance = relative_tolerance
         self._default = None
+        self._dtype = dtype
+
+        self.x = x
+        self.y = y
+        self.absolute_tolerance = absolute_tolerance
+        self.relative_tolerance = relative_tolerance
         self.default = default
 
         self._validate_dimensions()
@@ -1227,7 +1246,7 @@ class NullInterpolator(object):
         """
 
         if value is not None:
-            value = np.atleast_1d(value).astype(np.float_)
+            value = np.atleast_1d(value).astype(self._dtype)
 
             assert value.ndim == 1, (
                 '"x" independent variable must have exactly one dimension!')
@@ -1261,7 +1280,7 @@ class NullInterpolator(object):
         """
 
         if value is not None:
-            value = np.atleast_1d(value).astype(np.float_)
+            value = np.atleast_1d(value).astype(self._dtype)
 
             assert value.ndim == 1, (
                 '"y" dependent variable must have exactly one dimension!')
@@ -1375,7 +1394,7 @@ class NullInterpolator(object):
             Interpolated value(s).
         """
 
-        x = np.atleast_1d(x).astype(np.float_)
+        x = np.atleast_1d(x).astype(self._dtype)
 
         xi = as_numeric(self._evaluate(x))
 

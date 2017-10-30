@@ -51,9 +51,10 @@ from __future__ import division, unicode_literals
 
 import numpy as np
 
-from colour.utilities import CaseInsensitiveMapping, tsplit, tstack
+from colour.constants import DEFAULT_FLOAT_DTYPE
 from colour.models.rgb.transfer_functions import (CV_range, oetf_BT2020,
                                                   eotf_BT2020)
+from colour.utilities import CaseInsensitiveMapping, tsplit, tstack
 
 __author__ = 'Colour Developers'
 __copyright__ = 'Copyright (C) 2013-2017 - Colour Developers'
@@ -68,14 +69,10 @@ __all__ = [
 ]
 
 YCBCR_WEIGHTS = CaseInsensitiveMapping({
-    'Rec. 601':
-    np.array([0.2990, 0.1140]),
-    'Rec. 709':
-    np.array([0.2126, 0.0722]),
-    'Rec. 2020':
-    np.array([0.2627, 0.0593]),
-    'SMPTE-240M':
-    np.array([0.2122, 0.0865])
+    'Rec. 601': np.array([0.2990, 0.1140]),
+    'Rec. 709': np.array([0.2126, 0.0722]),
+    'Rec. 2020': np.array([0.2627, 0.0593]),
+    'SMPTE-240M': np.array([0.2122, 0.0865])
 })
 """
 Luma weightings presets.
@@ -117,15 +114,15 @@ def YCbCr_ranges(bits, is_legal, is_int):
 
     if is_legal:
         ranges = np.array([16, 235, 16, 240])
-        ranges *= 2**(bits - 8)
+        ranges *= 2 ** (bits - 8)
     else:
-        ranges = np.array([0, 2**bits - 1, 0, 2**bits - 1])
+        ranges = np.array([0, 2 ** bits - 1, 0, 2 ** bits - 1])
 
     if not is_int:
-        ranges = ranges.astype(np.float_) / (2**bits - 1)
+        ranges = ranges.astype(DEFAULT_FLOAT_DTYPE) / (2 ** bits - 1)
 
     if is_int and not is_legal:
-        ranges[3] = 2**bits
+        ranges[3] = 2 ** bits
 
     if not is_int and not is_legal:
         ranges[2] = -0.5
@@ -275,7 +272,7 @@ def RGB_to_YCbCr(RGB,
                                             YCbCr_ranges(
                                                 out_bits, out_legal, out_int))
 
-    RGB_float = RGB.astype(np.float_) - RGB_min
+    RGB_float = RGB.astype(DEFAULT_FLOAT_DTYPE) - RGB_min
     RGB_float *= 1 / (RGB_max - RGB_min)
     R, G, B = tsplit(RGB_float)
 
@@ -373,7 +370,7 @@ def YCbCr_to_RGB(YCbCr,
     """
 
     YCbCr = np.asarray(YCbCr)
-    Y, Cb, Cr = tsplit(YCbCr.astype(np.float_))
+    Y, Cb, Cr = tsplit(YCbCr.astype(DEFAULT_FLOAT_DTYPE))
     Kr, Kb = K
     Y_min, Y_max, C_min, C_max = kwargs.get('in_range',
                                             YCbCr_ranges(
@@ -542,7 +539,7 @@ def YcCbcCrc_to_RGB(YcCbcCrc,
     """
 
     YcCbcCrc = np.asarray(YcCbcCrc)
-    Yc, Cbc, Crc = tsplit(YcCbcCrc.astype(np.float_))
+    Yc, Cbc, Crc = tsplit(YcCbcCrc.astype(DEFAULT_FLOAT_DTYPE))
     Y_min, Y_max, C_min, C_max = kwargs.get('in_range',
                                             YCbCr_ranges(
                                                 in_bits, in_legal, in_int))
