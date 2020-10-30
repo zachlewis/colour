@@ -10,6 +10,7 @@ Defines the classes and definitions handling *LUT* processing:
 -   :class:`colour.LUT3D`
 -   :class:`colour.LUTSequence`
 -   :class:`colour.io.LUT_to_LUT`
+-   :class:`colour.io.Range`
 -   :class:`colour.io.Matrix`
 -   :class:`colour.io.Log`
 """
@@ -2481,6 +2482,127 @@ class LUTSequence(MutableSequence):
         """
 
         return deepcopy(self)
+
+
+class Range(AbstractLUTSequenceOperator):
+    """
+    Defines the class for a *Range* scale.
+
+    Parameters
+    ----------
+    min_in_value : numeric, optional
+        Input value which will be mapped to min_out_value.
+    max_in_value : numeric, optional
+        Input value which will be mapped to max_out_value.
+    min_out_value : numeric, optional
+        Output value to which min_in_value will be mapped.
+    max_out_value : numeric, optional
+        Output value to which max_in_value will be mapped.
+    no_clamp : boolean, optional
+        Whether to not clamp the output values.
+    name : unicode, optional
+        *Range* name.
+    comments : array_like, optional
+        Comments to add to the *Range*.
+
+    Methods
+    -------
+    apply
+
+    Examples
+    --------
+    A full to legal scale:
+
+    >>> print(Range(name='Full to Legal',
+                    min_out_value=64./1023,
+                    max_out_value=940./1023))
+    Range - Full to Legal
+    ---------------------
+    <BLANKLINE>
+    Input      : 0.0 - 1.0
+    Output     : 0.0625610948192 - 0.918866080156
+    <BLANKLINE>
+    Clamping   : No
+    """
+    def __init__(self,
+                 min_in_value=0.0,
+                 max_in_value=1.0,
+                 min_out_value=0.0,
+                 max_out_value=1.0,
+                 no_clamp=True,
+                 name='',
+                 comments=None):
+        self.min_in_value = min_in_value
+        self.max_in_value = max_in_value
+        self.min_out_value = min_out_value
+        self.max_out_value = max_out_value
+        self.no_clamp = no_clamp
+        self.name = name
+        self.comments = comments
+
+    def apply(self, RGB):
+        """
+        Applies the *Range* scale to given *RGB* array.
+
+        Parameters
+        ----------
+        RGB : array_like
+            *RGB* array to apply the *Range* scale to.
+
+        Returns
+        -------
+        ndarray
+            Scaled *RGB* array.
+
+        Examples
+        --------
+        >>> R = Range(name='Legal to Full',
+        ...           min_in_value=64./1023,
+        ...           max_in_value=940./1023,
+        ...           no_clamp=False)
+        >>> RGB = np.array([0.8, 0.9, 1.0])
+        >>> R.apply(RGB)
+        array([ 0.86118721,  0.97796804,  1.        ])
+        """
+        RGB = np.asarray(RGB)
+
+        scale = ((self.max_out_value - self.min_out_value) /
+                 (self.max_in_value - self.min_in_value))
+        RGB_out = RGB * scale + self.min_out_value - self.min_in_value * scale
+
+        if not self.no_clamp:
+            RGB_out = np.clip(RGB_out, self.min_out_value, self.max_out_value)
+
+        return RGB_out
+
+    def __str__(self):
+        """
+        Returns a formatted string representation of the *Range* operation.
+
+        Returns
+        -------
+        unicode
+            Formatted string representation.
+        """
+
+        return ('{0} - {1}\n'
+                '{2}\n\n'
+                'Input      : {3} - {4}\n'
+                'Output     : {5} - {6}\n\n'
+                'Clamping   : {7}'
+                '{8}'.format(
+                    self.__class__.__name__,
+                    self.name,
+                    '-' * (len(self.__class__.__name__) + 3 + len(self.name)),
+                    self.min_in_value,
+                    self.max_in_value,
+                    self.min_out_value,
+                    self.max_out_value,
+                    'No' if self.no_clamp else 'Yes',
+                    '\n\n{0}'.format('\n'.join(self.comments))
+                    if self.comments else '',
+                ))
+
 
 class Matrix(AbstractLUTSequenceOperator):
     """
