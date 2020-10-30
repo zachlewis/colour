@@ -23,6 +23,7 @@ from .iridas_cube import read_LUT_IridasCube, write_LUT_IridasCube
 from .resolve_cube import read_LUT_ResolveCube, write_LUT_ResolveCube
 from .sony_spi1d import read_LUT_SonySPI1D, write_LUT_SonySPI1D
 from .sony_spi3d import read_LUT_SonySPI3D, write_LUT_SonySPI3D
+from .sony_spimtx import read_LUT_SonySPImtx, write_LUT_SonySPImtx
 from .cinespace_csp import read_LUT_Cinespace, write_LUT_Cinespace
 
 __all__ = [
@@ -39,7 +40,7 @@ EXTENSION_TO_LUT_FORMAT_MAPPING = CaseInsensitiveMapping({
     '.cube': 'Iridas Cube',
     '.spi1d': 'Sony SPI1D',
     '.spi3d': 'Sony SPI3D',
-    '.csp': 'Cinespace'
+    '.spimtx': 'Sony SPImtx',
 })
 """
 Extension to *LUT* format.
@@ -54,6 +55,7 @@ LUT_READ_METHODS = CaseInsensitiveMapping({
     'Resolve Cube': read_LUT_ResolveCube,
     'Sony SPI1D': read_LUT_SonySPI1D,
     'Sony SPI3D': read_LUT_SonySPI3D,
+    'Sony SPImtx': read_LUT_SonySPImtx,
 })
 LUT_READ_METHODS.__doc__ = """
 Supported *LUT* reading methods.
@@ -64,7 +66,7 @@ References
 
 LUT_READ_METHODS : CaseInsensitiveMapping
     **{'Cinespace', 'Iridas Cube', 'Resolve Cube', 'Sony SPI1D',
-    'Sony SPI3D'}**
+    'Sony SPI3D', 'read_LUT_SonySPImtx'}**
 """
 
 
@@ -78,8 +80,8 @@ def read_LUT(path, method=None, **kwargs):
         *LUT* path.
     method : unicode, optional
         **{None, 'Cinespace', 'Iridas Cube', 'Resolve Cube', 'Sony SPI1D',
-        'Sony SPI3D'}**, Reading method, if *None*, the method will be
-        auto-detected according to extension.
+        'Sony SPI3D', 'Sony SPImtx'}**, Reading method, if *None*, the method
+        will be auto-detected according to extension.
 
     Returns
     -------
@@ -160,6 +162,7 @@ LUT_WRITE_METHODS = CaseInsensitiveMapping({
     'Resolve Cube': write_LUT_ResolveCube,
     'Sony SPI1D': write_LUT_SonySPI1D,
     'Sony SPI3D': write_LUT_SonySPI3D,
+    'Sony SPImtx': write_LUT_SonySPImtx,
     'Cinespace': write_LUT_Cinespace,
 })
 LUT_WRITE_METHODS.__doc__ = """
@@ -171,7 +174,7 @@ References
 
 LUT_WRITE_METHODS : CaseInsensitiveMapping
     **{'Cinespace', 'Iridas Cube', 'Resolve Cube', 'Sony SPI1D',
-    'Sony SPI3D'}**
+    'Sony SPI3D', 'Sony SPImtx'}**
 """
 
 
@@ -190,8 +193,8 @@ def write_LUT(LUT, path, decimals=7, method=None, **kwargs):
         Formatting decimals.
     method : unicode, optional
         **{None, 'Cinespace', 'Iridas Cube', 'Resolve Cube', 'Sony SPI1D',
-        'Sony SPI3D'}**, Writing method, if *None*, the method will be
-        auto-detected according to extension.
+        'Sony SPI3D', 'Sony SPImtx'}**, Writing method, if *None*, the method
+        will be auto-detected according to extension.
 
     Returns
     -------

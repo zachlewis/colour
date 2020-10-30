@@ -10,6 +10,7 @@ Defines the classes and definitions handling *LUT* processing:
 -   :class:`colour.LUT3D`
 -   :class:`colour.LUTSequence`
 -   :class:`colour.io.LUT_to_LUT`
+-   :class:`colour.io.Matrix`
 -   :class:`colour.io.Log`
 """
 
@@ -2480,6 +2481,126 @@ class LUTSequence(MutableSequence):
         """
 
         return deepcopy(self)
+
+class Matrix(AbstractLUTSequenceOperator):
+    """
+    Defines the base class for a *Matrix* transform.
+
+    Parameters
+    ----------
+    array : array_like, optional
+        3x3 or 3x4 matrix for the transform.
+    name : unicode, optional
+        *Matrix* name.
+    comments : array_like, optional
+        Comments to add to the *Matrix*.
+
+    Methods
+    -------
+    apply
+
+    Examples
+    --------
+    Instantiating an identity matrix:
+
+    >>> print(Matrix(name='Identity'))
+    Matrix - Identity
+    -----------------
+    <BLANKLINE>
+    Dimensions : (3, 3)
+    Matrix     : [[ 1.  0.  0.]
+                  [ 0.  1.  0.]
+                  [ 0.  0.  1.]]
+
+    Instantiating a matrix with comments:
+
+    >>> array = np.array([[ 1.45143932, -0.23651075, -0.21492857],
+        ...                   [-0.07655377,  1.1762297 , -0.09967593],
+        ...                   [ 0.00831615, -0.00603245,  0.9977163 ]])
+    >>> print(Matrix(array=array,
+    ...       name='AP0 to AP1',
+    ...       comments=['A first comment.', 'A second comment.']))
+    Matrix - AP0 to AP1
+    -------------------
+    <BLANKLINE>
+    Dimensions : (3, 3)
+    Matrix     : [[ 1.45143932 -0.23651075 -0.21492857]
+                  [-0.07655377  1.1762297  -0.09967593]
+                  [ 0.00831615 -0.00603245  0.9977163 ]]
+    <BLANKLINE>
+    A first comment.
+    A second comment.
+    """
+    def __init__(self, array=np.identity(3), name='', comments=None):
+        self.array = array
+        self.name = name
+        self.comments = comments
+
+    @staticmethod
+    def _validate_array(array):
+        assert array.shape in [(3, 4), (3, 3)], 'Matrix shape error!'
+
+        return array
+
+    def apply(self, RGB):
+        """
+        Applies the *Matrix* transform to given *RGB* array.
+
+        Parameters
+        ----------
+        RGB : array_like
+            *RGB* array to apply the *Matrix* transform to.
+
+        Returns
+        -------
+        ndarray
+            Transformed *RGB* array.
+
+        Examples
+        --------
+        >>> array = np.array([[ 1.45143932, -0.23651075, -0.21492857],
+        ...                   [-0.07655377,  1.1762297 , -0.09967593],
+        ...                   [ 0.00831615, -0.00603245,  0.9977163 ]])
+        >>> M = Matrix(array=array)
+        >>> RGB = [0.3, 0.4, 0.5]
+        >>> M.apply(RGB)
+        array([ 0.23336321,  0.39768778,  0.49894002])
+        """
+        RGB = np.asarray(RGB)
+
+        if self.array.shape == (3, 4):
+            R, G, B = tsplit(RGB)
+            RGB = tstack([R, G, B, np.ones(R.shape)])
+
+        return dot_vector(self.array, RGB)
+
+    def __str__(self):
+        """
+        Returns a formatted string representation of the *Matrix*.
+
+        Returns
+        -------
+        unicode
+            Formatted string representation.
+        """
+        def _indent_array(a):
+            """
+            Indents given array string representation.
+            """
+
+            return str(a).replace(' [', ' ' * 14 + '[')
+
+        return ('{0} - {1}\n'
+                '{2}\n\n'
+                'Dimensions : {3}\n'
+                'Matrix     : {4}'
+                '{5}'.format(
+                    self.__class__.__name__, self.name,
+                    '-' * (len(self.__class__.__name__) + 3 + len(self.name)),
+                    self.array.shape, _indent_array(
+                        self.array), '\n\n{0}'.format('\n'.join(self.comments))
+                    if self.comments else ''))
+
 
 class Log(AbstractLUTSequenceOperator):
     # TODO: Actual docstrings :)
