@@ -12,6 +12,7 @@ Defines the classes and definitions handling *LUT* processing:
 -   :class:`colour.io.LUT_to_LUT`
 -   :class:`colour.io.Range`
 -   :class:`colour.io.Matrix`
+-   :class:`colour.io.ASC_CDL`
 -   :class:`colour.io.Log`
 """
 
