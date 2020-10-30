@@ -27,7 +27,7 @@ from .cinespace_csp import read_LUT_Cinespace, write_LUT_Cinespace
 
 __all__ = [
     'AbstractLUTSequenceOperator', 'LUT1D', 'LUT3x1D', 'LUT3D', 'LUTSequence',
-    'LUT_to_LUT'
+    'LUT_to_LUT', 'Log'
 ]
 __all__ += ['read_LUT_IridasCube', 'write_LUT_IridasCube']
 __all__ += ['read_LUT_ResolveCube', 'write_LUT_ResolveCube']
