@@ -46,6 +46,7 @@ EXTENSION_TO_LUT_FORMAT_MAPPING = CaseInsensitiveMapping({
     '.spi1d': 'Sony SPI1D',
     '.spi3d': 'Sony SPI3D',
     '.spimtx': 'Sony SPImtx',
+    '.csp': 'Cinespace',
     '.ccc': 'ASC CDL',
     '.cdl': 'ASC CDL',
     '.cc': 'ASC CDL',
