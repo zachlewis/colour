@@ -1967,6 +1967,9 @@ def LUT_to_LUT(LUT, cls, force_conversion=False, **kwargs):
 
     Parameters
     ----------
+    LUT : LUT3x1D or LUT3d or LUTSequence
+        :class:`LUT1D`, :class:`LUT3x1D` or :class:`LUT3D` class instance to
+        convert.
     cls : LUT1D or LUT3x1D or LUT3D
         *LUT* class instance.
     force_conversion : bool, optional
