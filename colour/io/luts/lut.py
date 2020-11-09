@@ -2868,7 +2868,7 @@ class Log(AbstractLUTSequenceOperator):
         return self.logSideSlope
 
     @log_side_slope.setter
-    def log_side_slope(self, *value):
+    def log_side_slope(self, value):
         self.logSideSlope = value
 
     @property
@@ -2876,7 +2876,7 @@ class Log(AbstractLUTSequenceOperator):
         return self.logSideOffset
 
     @log_side_offset.setter
-    def log_side_offset(self, *value):
+    def log_side_offset(self, value):
         self.logSideOffset = value
 
     @property
@@ -2884,7 +2884,7 @@ class Log(AbstractLUTSequenceOperator):
         return self.linSideSlope
 
     @lin_side_slope.setter
-    def lin_side_slope(self, *value):
+    def lin_side_slope(self, value):
         self.linSideSlope = value
 
     @property
@@ -2892,7 +2892,7 @@ class Log(AbstractLUTSequenceOperator):
         return self.linSideOffset
 
     @lin_side_offset.setter
-    def lin_side_offset(self, *value):
+    def lin_side_offset(self, value):
         self.linSideOffset = value
 
     @property
@@ -2900,9 +2900,7 @@ class Log(AbstractLUTSequenceOperator):
         return self.linSideBreak
 
     @lin_side_break.setter
-    def lin_side_break(self, *value):
-        if value is None:
-            self.linSideBreak = None
+    def lin_side_break(self, value):
         self.linSideBreak = value
 
     @property
@@ -2910,7 +2908,7 @@ class Log(AbstractLUTSequenceOperator):
         return self.linearSlope
 
     @linear_slope.setter
-    def linear_slope(self, *value):
+    def linear_slope(self, value):
         if value is None:
             self.linearSlope = None
         self.linearSlope = value
