@@ -3055,4 +3055,4 @@ class Log(AbstractLUTSequenceOperator):
                     self.log_side_offset, self.lin_side_slope,
                     self.lin_side_offset, self.linear_slope,
                     self.lin_side_break, self.style,
-                    ' name={0}'.format(self.name) if self.name else "")
+                    ' name="{0}"'.format(self.name) if self.name else "")
