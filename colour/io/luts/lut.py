@@ -2936,6 +2936,7 @@ class Log(AbstractLUTSequenceOperator):
             return s.startswith('anti') or s.endswith('lin')
 
         function_kwargs = {}
+
         if style[-1] in ['2', '0']:
             __function = partial(logarithmic_function_basic,
                                  base=int(style[-1]),
@@ -3058,4 +3059,4 @@ class Log(AbstractLUTSequenceOperator):
                     self.log_side_offset, self.lin_side_slope,
                     self.lin_side_offset, self.linear_slope,
                     self.lin_side_break, self.style,
-                    ' name="{0}"'.format(self.name) if self.name else "")
+                    ', name="{0}"'.format(self.name) if self.name else "")
