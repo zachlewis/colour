@@ -109,8 +109,10 @@ def read_LUT_SonySPI3D(path):
     table = as_float_array(table)[sorting_indexes].reshape(
         [size, size, size, 3])
 
-    return LUT3D(
-        table, title, np.vstack([domain_min, domain_max]), comments=comments)
+    return LUT3D(table,
+                 title,
+                 np.vstack([domain_min, domain_max]),
+                 comments=comments)
 
 
 def write_LUT_SonySPI3D(LUT, path, decimals=7):

@@ -114,7 +114,6 @@ class ASC_CDL(AbstractLUTSequenceOperator):
     Comment 01 : A first comment.
     Comment 02 : A second comment.
     """
-
     def __init__(self,
                  slope=[1, 1, 1],
                  offset=[0, 0, 0],
@@ -147,7 +146,6 @@ class ASC_CDL(AbstractLUTSequenceOperator):
         unicode
             Formatted string representation.
         """
-
         def _format_array(array):
             array = np.asarray(array)
             if array.shape == (3, ):

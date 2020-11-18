@@ -527,7 +527,7 @@ def write_clf(LUT, path, name='', id='', decimals=10):
                 params.set(key, _format_float(value[0], decimals=decimals))
         else:
             for idx, params in enumerate(
-                    [ElementTree.SubElement(process_node, parameter_class)] * 3):
+                [ElementTree.SubElement(process_node, parameter_class)] * 3):
                 params.set('channel', 'RGB'[idx])
                 for key, value in parameter_data.items():
                     params.set(key, _format_float(value[idx],
@@ -740,7 +740,10 @@ def write_clf(LUT, path, name='', id='', decimals=10):
                 if node.linear_slope:
                     parameters['linearSlope'] = node.linear_slope
 
-            _populate_node_params(process_node, 'LogParams', decimals=decimals,  **parameters)
+            _populate_node_params(process_node,
+                                  'LogParams',
+                                  decimals=decimals,
+                                  **parameters)
 
         process_node.set('inBitDepth', '32f')
         process_node.set('outBitDepth', '32f')

@@ -2318,10 +2318,10 @@ class LUTSequence(MutableSequence):
             Evaluable string representation.
         """
 
-        operations = re.sub(
-            '^',
-            ' ' * 4,
-            ',\n'.join([repr(a) for a in self._sequence]), flags=re.MULTILINE)
+        operations = re.sub('^',
+                            ' ' * 4,
+                            ',\n'.join([repr(a) for a in self._sequence]),
+                            flags=re.MULTILINE)
         operations = re.sub('^\\s+$', '', operations, flags=re.MULTILINE)
 
         return '{0}(\n{1}\n)'.format(self.__class__.__name__, operations)
@@ -3022,30 +3022,35 @@ class Log(AbstractLUTSequenceOperator):
         title = "{0}{1}".format(
             "{0} - ".format(self.name) if self.name else '', direction)
         basic_style = self.style[-1] in '20'
-        return (
-            '{0} - {1}\n'
-            '{2}\n\n'
-            'style          : {3}\n'
-            'base           : {4}'
-            '{5}{6}{7}{8}{9}{10}{11}').format(
-                self.__class__.__name__, title,
-                '-' * (len(self.__class__.__name__) + 3 + len(title)),
-                self.style, self.base, '\nlogSideSlope   : {0}'.format(
-                    self.log_side_slope) if not basic_style else '',
-                '\nlogSideOffset  : {0}'.format(self.log_side_offset)
-                if not basic_style else '', '\nlinSideSlope   : {0}'.format(
-                    self.lin_side_slope) if not basic_style else '',
-                '\nlinSideOffset  : {0}'.format(self.lin_side_offset)
-                if not basic_style else '',
-                '\nlinearSlope    : {0}'.format(self.linear_slope)
-                if not basic_style and self.linear_slope is not None else '',
-                '\nlinSideBreak   : {0}'.format(self.lin_side_break)
-                if not basic_style and self.lin_side_break is not None else '',
-                '\n\n{0}'.format('\n'.join(self.comments))
-                if self.comments else '',)
+        return ('{0} - {1}\n'
+                '{2}\n\n'
+                'style          : {3}\n'
+                'base           : {4}'
+                '{5}{6}{7}{8}{9}{10}{11}').format(
+                    self.__class__.__name__,
+                    title,
+                    '-' * (len(self.__class__.__name__) + 3 + len(title)),
+                    self.style,
+                    self.base,
+                    '\nlogSideSlope   : {0}'.format(self.log_side_slope)
+                    if not basic_style else '',
+                    '\nlogSideOffset  : {0}'.format(self.log_side_offset)
+                    if not basic_style else '',
+                    '\nlinSideSlope   : {0}'.format(self.lin_side_slope)
+                    if not basic_style else '',
+                    '\nlinSideOffset  : {0}'.format(self.lin_side_offset)
+                    if not basic_style else '',
+                    '\nlinearSlope    : {0}'.format(self.linear_slope) if
+                    not basic_style and self.linear_slope is not None else '',
+                    '\nlinSideBreak   : {0}'.format(self.lin_side_break)
+                    if not basic_style and self.lin_side_break is not None else
+                    '',
+                    '\n\n{0}'.format('\n'.join(self.comments))
+                    if self.comments else '',
+                )
 
     def __repr__(self):
-        #TODO: show only the used parameters (see __str__ method)
+        # TODO: show only the used parameters (see __str__ method)
         return ("{0}("
                 "base={1}, "
                 "logSideSlope={2}, "

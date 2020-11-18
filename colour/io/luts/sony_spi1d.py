@@ -111,18 +111,16 @@ def read_LUT_SonySPI1D(path):
 
     table = as_float_array(table)
     if dimensions == 1:
-        return LUT1D(
-            np.squeeze(table),
-            title,
-            np.array([domain_min, domain_max]),
-            comments=comments)
+        return LUT1D(np.squeeze(table),
+                     title,
+                     np.array([domain_min, domain_max]),
+                     comments=comments)
     elif dimensions == 2:
-        return LUT3x1D(
-            table,
-            title,
-            np.array([[domain_min, domain_min, domain_min],
-                      [domain_max, domain_max, domain_max]]),
-            comments=comments)
+        return LUT3x1D(table,
+                       title,
+                       np.array([[domain_min, domain_min, domain_min],
+                                 [domain_max, domain_max, domain_max]]),
+                       comments=comments)
 
 
 def write_LUT_SonySPI1D(LUT, path, decimals=7):
@@ -206,8 +204,8 @@ def write_LUT_SonySPI1D(LUT, path, decimals=7):
         spi1d_file.write('From {1:0.{0}f} {2:0.{0}f}\n'.format(
             decimals, *domain))
 
-        spi1d_file.write('Length {0}\n'.format(LUT.table.size if is_1D else
-                                               LUT.table.shape[0]))
+        spi1d_file.write('Length {0}\n'.format(
+            LUT.table.size if is_1D else LUT.table.shape[0]))
 
         spi1d_file.write('Components {0}\n'.format(1 if is_1D else 3))
 

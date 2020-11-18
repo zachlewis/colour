@@ -107,10 +107,9 @@ def read_LUT_Cinespace(path):
         for row in pre_LUT:
             if len(row) != pre_LUT_size:
                 pre_LUT_padded.append(
-                    np.pad(
-                        row, (0, pre_LUT_size - row.shape[0]),
-                        mode='constant',
-                        constant_values=np.nan))
+                    np.pad(row, (0, pre_LUT_size - row.shape[0]),
+                           mode='constant',
+                           constant_values=np.nan))
             else:
                 pre_LUT_padded.append(row)
         pre_LUT = np.asarray(pre_LUT_padded)
@@ -168,20 +167,18 @@ def read_LUT_Cinespace(path):
         if (is_3D and pre_LUT.shape == (6, 2) and np.array_equal(
                 pre_LUT.reshape(3, 4).transpose()[2:4], unity_range)):
             table = table.reshape([size[0], size[1], size[2], 3], order='F')
-            LUT = LUT3D(
-                domain=pre_LUT.reshape(3, 4).transpose()[0:2],
-                name=title,
-                comments=comments,
-                table=table)
+            LUT = LUT3D(domain=pre_LUT.reshape(3, 4).transpose()[0:2],
+                        name=title,
+                        comments=comments,
+                        table=table)
             return LUT
 
         if (not is_3D and pre_LUT.shape == (6, 2) and np.array_equal(
                 pre_LUT.reshape(3, 4).transpose()[2:4], unity_range)):
-            LUT = LUT3x1D(
-                domain=pre_LUT.reshape(3, 4).transpose()[0:2],
-                name=title,
-                comments=comments,
-                table=table)
+            LUT = LUT3x1D(domain=pre_LUT.reshape(3, 4).transpose()[0:2],
+                          name=title,
+                          comments=comments,
+                          table=table)
 
             return LUT
 

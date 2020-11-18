@@ -23,8 +23,8 @@ __status__ = 'Production'
 
 __all__ = ['LUTS_DIRECTORY', 'TestReadLUTIridasCube', 'TestWriteLUTIridasCube']
 
-LUTS_DIRECTORY = os.path.join(
-    os.path.dirname(__file__), 'resources', 'iridas_cube')
+LUTS_DIRECTORY = os.path.join(os.path.dirname(__file__), 'resources',
+                              'iridas_cube')
 
 
 class TestReadLUTIridasCube(unittest.TestCase):
@@ -32,7 +32,6 @@ class TestReadLUTIridasCube(unittest.TestCase):
     Defines :func:`colour.io.luts.iridas_cube.read_LUT_IridasCube` definition
     unit tests methods.
     """
-
     def test_read_LUT_IridasCube(self):
         """
         Tests :func:`colour.io.luts.iridas_cube.read_LUT_IridasCube`
@@ -101,7 +100,6 @@ class TestWriteLUTIridasCube(unittest.TestCase):
     Defines :func:`colour.io.luts.iridas_cube.write_LUT_IridasCube` definition
     unit tests methods.
     """
-
     def setUp(self):
         """
         Initialises common tests attributes.
@@ -139,8 +137,8 @@ class TestWriteLUTIridasCube(unittest.TestCase):
                          'ACES_Proxy_10_to_ACES.cube'))
         self.assertEqual(LUT_1_r, LUT_1_t)
 
-        LUT_2_r = read_LUT_IridasCube(
-            os.path.join(LUTS_DIRECTORY, 'Demo.cube'))
+        LUT_2_r = read_LUT_IridasCube(os.path.join(LUTS_DIRECTORY,
+                                                   'Demo.cube'))
         write_LUT_IridasCube(
             LUT_2_r, os.path.join(self._temporary_directory, 'Demo.cube'))
         LUT_2_t = read_LUT_IridasCube(

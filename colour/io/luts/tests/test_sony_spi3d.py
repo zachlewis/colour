@@ -24,8 +24,8 @@ __status__ = 'Production'
 
 __all__ = ['LUTS_DIRECTORY', 'TestReadLUTSonySPI3D', 'TestWriteLUTSonySPI3D']
 
-LUTS_DIRECTORY = os.path.join(
-    os.path.dirname(__file__), 'resources', 'sony_spi3d')
+LUTS_DIRECTORY = os.path.join(os.path.dirname(__file__), 'resources',
+                              'sony_spi3d')
 
 
 class TestReadLUTSonySPI3D(unittest.TestCase):
@@ -33,7 +33,6 @@ class TestReadLUTSonySPI3D(unittest.TestCase):
     Defines :func:`colour.io.luts.sony_spi3d.read_LUT_SonySPI3D` definition
     unit tests methods.
     """
-
     def test_read_LUT_SonySPI3D(self):
         """
         Tests :func:`colour.io.luts.sony_spi3d.read_LUT_SonySPI3D` definition.
@@ -174,7 +173,6 @@ class TestWriteLUTSonySPI3D(unittest.TestCase):
     Defines :func:`colour.io.luts.sony_spi3d.write_LUT_SonySPI3D` definition
     unit tests methods.
     """
-
     def setUp(self):
         """
         Initialises common tests attributes.

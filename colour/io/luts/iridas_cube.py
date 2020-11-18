@@ -135,22 +135,20 @@ def read_LUT_IridasCube(path):
 
     table = as_float_array(table)
     if dimensions == 2:
-        return LUT3x1D(
-            table,
-            title,
-            np.vstack([domain_min, domain_max]),
-            comments=comments)
+        return LUT3x1D(table,
+                       title,
+                       np.vstack([domain_min, domain_max]),
+                       comments=comments)
     elif dimensions == 3:
         # The lines of table data shall be in ascending index order,
         # with the first component index (Red) changing most rapidly,
         # and the last component index (Blue) changing least rapidly.
         table = table.reshape([size, size, size, 3], order='F')
 
-        return LUT3D(
-            table,
-            title,
-            np.vstack([domain_min, domain_max]),
-            comments=comments)
+        return LUT3D(table,
+                     title,
+                     np.vstack([domain_min, domain_max]),
+                     comments=comments)
 
 
 def write_LUT_IridasCube(LUT, path, decimals=7):

@@ -30,7 +30,6 @@ class TestReadLUT(unittest.TestCase):
     Defines :func:`colour.io.luts.__init__.read_LUT` definition unit tests
     methods.
     """
-
     def test_read_LUT(self):
         """
         Tests :func:`colour.io.luts.__init__.read_LUT` definition.
@@ -98,7 +97,6 @@ class TestWriteLUT(unittest.TestCase):
     Defines :func:`colour.io.luts.__init__.write_LUT` definition unit tests
     methods.
     """
-
     def setUp(self):
         """
         Initialises common tests attributes.

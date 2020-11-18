@@ -24,8 +24,8 @@ __all__ = [
     'LUTS_DIRECTORY', 'TestReadLUTResolveCube', 'TestWriteLUTResolveCube'
 ]
 
-LUTS_DIRECTORY = os.path.join(
-    os.path.dirname(__file__), 'resources', 'resolve_cube')
+LUTS_DIRECTORY = os.path.join(os.path.dirname(__file__), 'resources',
+                              'resolve_cube')
 
 
 class TestReadLUTResolveCube(unittest.TestCase):
@@ -33,7 +33,6 @@ class TestReadLUTResolveCube(unittest.TestCase):
     Defines :func:`colour.io.luts.resolve_cube.read_LUT_ResolveCube` definition
     unit tests methods.
     """
-
     def test_read_LUT_ResolveCube(self):
         """
         Tests :func:`colour.io.luts.resolve_cube.read_LUT_ResolveCube`
@@ -127,7 +126,6 @@ class TestWriteLUTResolveCube(unittest.TestCase):
     Defines :func:`colour.io.luts.resolve_cube.write_LUT_ResolveCube`
     definition unit tests methods.
     """
-
     def setUp(self):
         """
         Initialises common tests attributes.
@@ -192,8 +190,8 @@ class TestWriteLUTResolveCube(unittest.TestCase):
             os.path.join(LUTS_DIRECTORY,
                          'Three_Dimensional_Table_With_Shaper.cube'))
 
-        LUT_4_r.sequence[0] = LUT_4_r.sequence[0].as_LUT(
-            LUT1D, force_conversion=True)
+        LUT_4_r.sequence[0] = LUT_4_r.sequence[0].as_LUT(LUT1D,
+                                                         force_conversion=True)
 
         write_LUT_ResolveCube(
             LUT_4_r,

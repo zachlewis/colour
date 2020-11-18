@@ -24,8 +24,8 @@ __status__ = 'Production'
 
 __all__ = ['LUTS_DIRECTORY', 'TestReadLUTCinespace', 'TestWriteLUTCinespace']
 
-LUTS_DIRECTORY = os.path.join(
-    os.path.dirname(__file__), 'resources', 'cinespace')
+LUTS_DIRECTORY = os.path.join(os.path.dirname(__file__), 'resources',
+                              'cinespace')
 
 
 class TestReadLUTCinespace(unittest.TestCase):
@@ -33,7 +33,6 @@ class TestReadLUTCinespace(unittest.TestCase):
     Defines :func:`colour.io.luts.cinespace_csp.read_LUT_Cinespace` definition
     unit tests methods.
     """
-
     def test_read_LUT_Cinespace(self):
         """
         Tests :func:`colour.io.luts.cinespace_csp.read_LUT_Cinespace`
@@ -113,7 +112,6 @@ class TestWriteLUTCinespace(unittest.TestCase):
     Defines :func:`colour.io.luts.cinespace_csp.write_LUT_Cinespace` definition
     unit tests methods.
     """
-
     def setUp(self):
         """
         Initialises common tests attributes.
@@ -182,8 +180,8 @@ class TestWriteLUTCinespace(unittest.TestCase):
         LUT_5_r = read_LUT_Cinespace(
             os.path.join(LUTS_DIRECTORY,
                          'Three_Dimensional_Table_With_Shaper.csp'))
-        LUT_5_r.sequence[0] = LUT_5_r.sequence[0].as_LUT(
-            LUT1D, force_conversion=True)
+        LUT_5_r.sequence[0] = LUT_5_r.sequence[0].as_LUT(LUT1D,
+                                                         force_conversion=True)
         write_LUT_Cinespace(
             LUT_5_r,
             os.path.join(self._temporary_directory,
