@@ -2918,7 +2918,6 @@ class Log(AbstractLUTSequenceOperator):
         return style.lower() in [s.lower() for s in self.lin_to_log_styles]
 
     def is_decoding_style(self, style=None):
-
         style = style or self.style
         return style.lower() in [s.lower() for s in self.log_to_lin_styles]
 
@@ -2962,6 +2961,10 @@ class Log(AbstractLUTSequenceOperator):
 
             if lin_side_break is not None:
                 function_kwargs.update(lin_side_break=lin_side_break)
+
+                if linear_slope is not None:
+                    function_kwargs.update(linear_slope=linear_slope)
+
                 style = 'cameraLogToLin' if _is_decoding_style(
                     style) else 'cameraLinToLog'
                 __function = partial(logarithmic_function_camera,
