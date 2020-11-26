@@ -2860,7 +2860,7 @@ class Log(AbstractLUTSequenceOperator):
         return self.logSideSlope
 
     @log_side_slope.setter
-    def log_side_slope(self, *value):
+    def log_side_slope(self, value):
         self.logSideSlope = value
 
     @property
@@ -2868,7 +2868,7 @@ class Log(AbstractLUTSequenceOperator):
         return self.logSideOffset
 
     @log_side_offset.setter
-    def log_side_offset(self, *value):
+    def log_side_offset(self, value):
         self.logSideOffset = value
 
     @property
@@ -2876,7 +2876,7 @@ class Log(AbstractLUTSequenceOperator):
         return self.linSideSlope
 
     @lin_side_slope.setter
-    def lin_side_slope(self, *value):
+    def lin_side_slope(self, value):
         self.linSideSlope = value
 
     @property
@@ -2884,7 +2884,7 @@ class Log(AbstractLUTSequenceOperator):
         return self.linSideOffset
 
     @lin_side_offset.setter
-    def lin_side_offset(self, *value):
+    def lin_side_offset(self, value):
         self.linSideOffset = value
 
     @property
@@ -2892,9 +2892,7 @@ class Log(AbstractLUTSequenceOperator):
         return self.linSideBreak
 
     @lin_side_break.setter
-    def lin_side_break(self, *value):
-        if value is None:
-            self.linSideBreak = None
+    def lin_side_break(self, value):
         self.linSideBreak = value
 
     @property
@@ -2902,7 +2900,7 @@ class Log(AbstractLUTSequenceOperator):
         return self.linearSlope
 
     @linear_slope.setter
-    def linear_slope(self, *value):
+    def linear_slope(self, value):
         if value is None:
             self.linearSlope = None
         self.linearSlope = value
@@ -2912,7 +2910,6 @@ class Log(AbstractLUTSequenceOperator):
         return style.lower() in [s.lower() for s in self.lin_to_log_styles]
 
     def is_decoding_style(self, style=None):
-
         style = style or self.style
         return style.lower() in [s.lower() for s in self.log_to_lin_styles]
 
@@ -2931,6 +2928,7 @@ class Log(AbstractLUTSequenceOperator):
             return s.startswith('anti') or s.endswith('lin')
 
         function_kwargs = {}
+
         if style[-1] in ['2', '0']:
             __function = partial(logarithmic_function_basic,
                                  base=int(style[-1]),
@@ -2956,6 +2954,10 @@ class Log(AbstractLUTSequenceOperator):
 
             if lin_side_break is not None:
                 function_kwargs.update(lin_side_break=lin_side_break)
+
+                if linear_slope is not None:
+                    function_kwargs.update(linear_slope=linear_slope)
+
                 style = 'cameraLogToLin' if _is_decoding_style(
                     style) else 'cameraLinToLog'
                 __function = partial(logarithmic_function_camera,
@@ -3049,4 +3051,4 @@ class Log(AbstractLUTSequenceOperator):
                     self.log_side_offset, self.lin_side_slope,
                     self.lin_side_offset, self.linear_slope,
                     self.lin_side_break, self.style,
-                    ' name={0}'.format(self.name) if self.name else "")
+                    ', name="{0}"'.format(self.name) if self.name else "")
