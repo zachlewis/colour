@@ -45,13 +45,13 @@ from colour.algebra import LinearInterpolator, table_interpolation_trilinear
 from colour.constants import DEFAULT_INT_DTYPE
 from colour.models import (gamma_function, exponent_function_basic,
                            exponent_function_monitor_curve)
-from colour.utilities import (as_float_array, dot_vector, is_numeric,
+from colour.utilities import (as_float_array, vector_dot, is_numeric,
                               is_iterable, is_string, full, linear_conversion,
                               runtime_warning, tsplit, tstack, usage_warning)
 from colour.utilities.deprecation import handle_arguments_deprecation
 from colour.models.rgb.transfer_functions.log import (
     logarithmic_function_basic, logarithmic_function_camera,
-    logarithmic_function_quasilog, log_decoding_Log2, log_decoding_Log2)
+    logarithmic_function_quasilog)
 __author__ = 'Colour Developers'
 __copyright__ = 'Copyright (C) 2013-2020 - Colour Developers'
 __license__ = 'New BSD License - https://opensource.org/licenses/BSD-3-Clause'
@@ -2699,7 +2699,7 @@ class Matrix(AbstractLUTSequenceOperator):
             R, G, B = tsplit(RGB)
             RGB = tstack([R, G, B, np.ones(R.shape)])
 
-        return dot_vector(self.array, RGB)
+        return vector_dot(self.array, RGB)
 
     def __str__(self):
         """
@@ -2803,7 +2803,7 @@ class Log(AbstractLUTSequenceOperator):
     ... assert np.array_equal(RGB, logc.reverse(logc.apply(RGB)))
     """
     def __init__(self,
-                 base=2,
+                 base=10,
                  logSideSlope=1,
                  logSideOffset=0,
                  linSideSlope=1,
@@ -2813,10 +2813,12 @@ class Log(AbstractLUTSequenceOperator):
                  style='cameraLinToLog',
                  name='',
                  comments=None):
+        self._base = None
+        self.base = base
         self.name = name
         self.style = style
         self.comments = comments or []
-        self.base = base
+
         self.linSideOffset = linSideOffset
         self.linSideSlope = linSideSlope
         self.logSideSlope = logSideSlope
@@ -2831,6 +2833,14 @@ class Log(AbstractLUTSequenceOperator):
     @property
     def log_to_lin_styles(self):
         return ['antiLog2', 'antiLog10', 'logToLin', 'cameraLogToLin']
+
+    @property
+    def base(self):
+        return self._base
+
+    @base.setter
+    def base(self, value):
+        self._base = int(value) if float(value) == int(value) else float(value)
 
     @property
     def style(self):

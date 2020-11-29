@@ -4,6 +4,7 @@ from logging import getLogger
 import numpy as np
 import re
 from six import StringIO
+from uuid import uuid4
 from xml.etree import ElementTree
 from xml.dom import minidom
 
@@ -153,14 +154,65 @@ def parse_array(array):
 def ns_strip(s):
     return re.sub('{.+}', '', s)
 
+def _collect_operator_kwargs(node):
+    """Extracts a key-value map from CLF (XML) nodes suitable for initializing
+    corresponding `colour` LUTSequenceOperators.
+    """
+    simple_attrs = ['name', 'id', 'style', 'inBitDepth', 'outBitDepth']
+    single_channel_params = ['base']
 
-def _collect_operator_kwargs(node, parameter_class='LogParams'):
-    standard_attrs = ['name', 'id', 'style', 'inBitDepth', 'outBitDepth']
+    opkwargs = {}
+
+    for child in node:
+        # collect simple attributes without modification
+        if any([
+                child.tag.lower().endswith(attr.lower())
+                for attr in simple_attrs
+        ]):
+            for attr in simple_attrs:
+                if child.tag.lower().endswith(attr.lower()):
+                    opkwargs[attr] = child.text
+
+        # collect all "description" attributes
+        elif child.tag.lower().endswith('description'):
+            if not opkwargs.get('comments'):
+                opkwargs['comments'] = [child.text]
+            else:
+                opkwargs['comments'].append(child.text)
+
+        # operator parameters (either floats or rgb-tuples of floats)
+        else:
+            channel = child.attrib.pop('channel', '').upper()
+
+            for tag, value in child.attrib.items():
+
+                if tag in single_channel_params:
+                    opkwargs[tag] = float(value)
+
+                # single value for all channels
+                elif not channel:
+                    opkwargs[tag] = float(value)
+
+                # individual per-channel values
+                else:
+                    rgb_vars = np.ones(3)
+                    rgb_vars['RGB'.index(channel)] = value
+                    if tag in opkwargs.keys():
+                        opkwargs[tag] *= rgb_vars
+                    else:
+                        opkwargs[tag] = rgb_vars
+    return opkwargs
+
+
+
+def _collect_operator_kwargs_alt(node, parameter_class='LogParams'):
+    """Extracts a key-value map from CLF (XML) nodes suitable for initializing
+    corresponding `colour` LUTSequenceOperators.
+    """
+    simple_attrs = ['name', 'id', 'style', 'inBitDepth', 'outBitDepth']
     parameter_classes = {
-        'LogParams': [
-            'base', 'logSideSlope', 'logSideOffset', 'linSideOffset',
-            'logSideOffset', 'linSideBreak', 'linearSlope'
-        ],
+        'LogParams': ['base', 'logSideSlope', 'logSideOffset', 'linSideSlope',
+                      'linSideOffset', 'linSideBreak', 'linearSlope'],
         'ExponentParams': ['offset', 'exponent'],
         None: [],
     }
@@ -169,34 +221,37 @@ def _collect_operator_kwargs(node, parameter_class='LogParams'):
     opkwargs = {}
 
     for child in node:
-        # shared node attributes
+        # collect simple attributes without modification
         if any([
                 child.tag.lower().endswith(attr.lower())
-                for attr in standard_attrs
+                for attr in simple_attrs
         ]):
-            for attr in standard_attrs:
+            for attr in simple_attrs:
                 if child.tag.lower().endswith(attr.lower()):
                     opkwargs[attr] = child.text
 
-        # special case attributes
+        # collect all "description" attributes
         elif child.tag.lower().endswith('description'):
-            opkwargs['comments'].append(child.text)
+            if not opkwargs.get('comments'):
+                opkwargs['comments'] = [child.text]
+            else:
+                opkwargs['comments'].append(child.text)
 
-        # node parameters
+        # collect operator-specific parameters
         elif child.tag.lower().endswith(parameter_class.lower()):
             channel = child.attrib.pop('channel', '').upper()
-            for tag, value in child.attrib.items():
-                tag = tag.lower()
 
-                # special case parameters
-                if tag in ['base']:
+            for tag, value in child.attrib.items():
+
+                # non-multichannel parameters
+                if tag.lower() in ['base']:
                     opkwargs[tag] = value
 
-                # standard class parameters parameters (either floats or rgb-tuples of floats)
+                # multichannel parameters (either floats or rgb-tuples of floats)
                 elif any(
-                    [tag.endswith(param.lower()) for param in parameters]):
+                    [tag.lower().endswith(param.lower()) for param in parameters]):
                     for param in parameters:
-                        if tag.endswith(param.lower()):
+                        if tag.lower().endswith(param.lower()):
 
                             # single value for all channels
                             if not channel:
@@ -216,8 +271,8 @@ def _collect_operator_kwargs(node, parameter_class='LogParams'):
             unmatched.append(tag)
 
     if len(unmatched) > 0:
-        msg = 'Ignored {} unknown tags: [{}]'.format(len(unmatched),
-                                                     ', '.join(unmatched))
+        msg = 'Ignored {0} unknown {1} tags: [{2}]'.format(
+            len(unmatched), parameter_class, ', '.join(unmatched))
         getLogger(__name__).warning(msg)
 
     return opkwargs
@@ -452,8 +507,9 @@ def add_Exponent(LUT, node):
 
 
 def add_Log(LUT, node):
-    opkwargs = _collect_operator_kwargs(node, 'LogParams')
-    operator = Log(**opkwargs)
+    #opkwargs = _collect_operator_kwargs(node, 'LogParams')
+    opkwargs = _collect_operator_kwargs(node)
+    operator = Log(**filter_kwargs(Log, **opkwargs))
     LUT.append(operator)
     return LUT
 
@@ -489,8 +545,8 @@ def read_clf(path):
 
     return LUT
 
-
-def write_clf(LUT, path, name='', id='', decimals=10):
+def write_clf(LUT, path=None, name='', id='', decimals=10):
+    id = id or uuid4()
     def _format_array(array, decimals=10):
         buffer = StringIO()
         if not array.dtype == np.uint16:
@@ -510,11 +566,13 @@ def write_clf(LUT, path, name='', id='', decimals=10):
             d = ElementTree.SubElement(node, 'Description')
             d.text = comment
 
-    def _populate_node_params(process_node,
-                              parameter_class,
-                              decimals=10,
-                              **parameter_data):
+    def _serialize_multichannel_parameters(process_node, parameter_class,
+                                           decimals=10, **parameter_data):
+        """Serialize a set of potentially multichannel CLF node parameters
+        to CLF-compatible XML.
+        """
         single_channel = True
+
         for key, value in parameter_data.items():
             value *= np.ones(3)
             parameter_data[key] = value
@@ -525,6 +583,7 @@ def write_clf(LUT, path, name='', id='', decimals=10):
             params = ElementTree.SubElement(process_node, parameter_class)
             for key, value in parameter_data.items():
                 params.set(key, _format_float(value[0], decimals=decimals))
+
         else:
             for idx, params in enumerate(
                     [ElementTree.SubElement(process_node, parameter_class)] * 3):
@@ -533,11 +592,13 @@ def write_clf(LUT, path, name='', id='', decimals=10):
                     params.set(key, _format_float(value[idx],
                                                   decimals=decimals))
 
+    
     process_list = ElementTree.Element('ProcessList')
-    process_list.set('xmlns', 'urn:NATAS:AMPAS:LUT:v2.0')
+    process_list.set('xmlns', 'urn:NATAS:AMPAS:LUT:v3.0')
     process_list.set('id', id)
-    process_list.set('name', name)
-    process_list.set('compCLFversion', '2.0')
+    if name:
+        process_list.set('name', name)
+    process_list.set('compCLFversion', '3.0')
     for node in LUT:
         if isinstance(node, ASC_CDL):
             process_node = ElementTree.Element('ASC_CDL')
@@ -725,29 +786,39 @@ def write_clf(LUT, path, name='', id='', decimals=10):
             if node.comments:
                 _add_comments(process_node, node.comments)
 
-            parameters = {
-                'base': node.base,
-                'logSideSlope': node.log_side_slope,
-                'logSideOffset': node.log_side_offset,
-                'linSideSlope': node.lin_side_slope,
-                'linSideOffset': node.lin_side_offset,
-            }
+            if any([str(node.style).lower().endswith(x) for x in ['2', '10']]):
+                parameters = {'base': node.base}
+            else:
+                parameters = {
+                    'base': node.base,
+                    'logSideSlope': node.log_side_slope,
+                    'logSideOffset': node.log_side_offset,
+                    'linSideSlope': node.lin_side_slope,
+                    'linSideOffset': node.lin_side_offset,
+                }
 
-            if node.style.startswith('camera'):
-                if node.lin_side_break:
-                    parameters['linSideBreak'] = node.lin_side_break
+                if node.style.startswith('camera'):
+                    if node.lin_side_break:
+                        parameters['linSideBreak'] = node.lin_side_break
 
-                if node.linear_slope:
-                    parameters['linearSlope'] = node.linear_slope
+                    if node.linear_slope:
+                        parameters['linearSlope'] = node.linear_slope
 
-            _populate_node_params(process_node, 'LogParams', decimals=decimals,  **parameters)
+            _serialize_multichannel_parameters(process_node, 'LogParams', decimals=decimals,  **parameters)
 
+        # Integer bit-depths are not supported in *colour*.
         process_node.set('inBitDepth', '32f')
         process_node.set('outBitDepth', '32f')
-        process_node.set('name', node.name)
+        if name:
+            process_node.set('name', node.name)
         process_list.append(process_node)
 
     xml_string = ElementTree.tostring(process_list, encoding='utf-8')
 
+    if not path:
+        return xml_string
+
     with open(path, 'w') as clf_file:
         clf_file.write(minidom.parseString(xml_string).toprettyxml())
+
+    getLogger(__name__).info("Wrote: %s" % str(path))
