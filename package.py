@@ -2,7 +2,7 @@
 
 name = 'colour'
 
-version = '0.3.16.0.dev112603'
+version = '0.3.17.0.dev112901'
 
 description = 'Colour Science for Python'
 
@@ -13,14 +13,15 @@ help = 'http://colour-science.org'
 license = 'BSD-3-Clause'
 
 requires = [
-    '~python-2.7|3.5+',
+    'python-3.5+',
     'imageio-2.0.0+',
     'six-1.10.0+',
     'scipy-0.16.0+',
     'networkx-2.2+<3',
     'pygraphviz-1.5+',
     'matplotlib-2+<4',
-    'OpenImageIO',
+    '~OpenImageIO-2.1',
+    '~OpenColorIO-2.0',
     #'openimageio-1+<3',
     'numpy',
 ]
@@ -28,11 +29,12 @@ requires = [
 private_build_requires = [
     'setuptools',
     'pip',
+    'poetry',
 ]
 
 variants = [
-    ['python-2.7'],
-    ['python-3.7'],
+    #['python-2.7'],
+    #['python-3.5+'],
 ]
 
 
